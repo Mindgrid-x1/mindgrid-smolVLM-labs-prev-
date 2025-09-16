@@ -102,7 +102,11 @@ npm install
 
 5. Generate a self-signed cert for your LAN IP:
    ```bash
-   npm run cert
+   # Install dotenv-cli if not already installed
+npm install --save-dev dotenv-cli
+
+# Then generate certs
+npm run cert
    ```
 
 ---
