@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>ModLabs • VLM Camera</title>
+<style>
+  :root{
+    --bg:#05060b; --bg2:#0a0d16; --card:#0c1220; --edge:#1a2340;
+    --ink:#eaf2ff; --muted:#8ea0c7; --brand:#6df3ff; --brand2:#4b7dff;
+    --alert:#ff5d7a; --ok:#34e28a; --warn:#ffcc66;
+    --glass:rgba(14,20,40,.55); --r:16px;
+    --soft:0 10px 40px rgba(0,0,0,.35);
+    --glow:0 0 12px rgba(109,243,255,.6), 0 0 32px rgba(75,125,255,.35);
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    background:
+      radial-gradient(1200px 800px at 120% -10%, rgba(77,140,255,.14), transparent 50%),
+      radial-gradient(1000px 600px at -20% 110%, rgba(109,243,255,.12), transparent 48%),
+      linear-gradient(180deg, var(--bg), var(--bg2));
+  }
+  .bg-grid::before{
+    content:""; position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(100,140,255,.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,140,255,.09) 1px, transparent 1px);
+    background-size:38px 38px, 38px 38px;
+    animation:gridFloat 20s linear infinite;
+    mask-image: radial-gradient(70% 60% at 50% 40%, black 60%, transparent 100%);
+  }
+  @keyframes gridFloat{0%{background-position:0 0,0 0}100%{background-position:0 38px,38px 0}}
+  header{
+    position:sticky; top:0; z-index:10;
+    backdrop-filter: blur(10px) saturate(120%);
+    background:linear-gradient(180deg, rgba(10,16,32,.75), rgba(10,16,32,.25));
+    border-bottom:1px solid rgba(109,243,255,.08);
+  }
+  .wrap{max-width:980px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:12px}
+  .logo{width:32px;height:32px;border-radius:12px;background: conic-gradient(from 180deg, #6df3ff, #4b7dff, #6df3ff); box-shadow:var(--glow)}
+  h1{margin:0; font-size:18px; letter-spacing:.3px}
+  .muted{color:var(--muted)}
+  main{max-width:980px; margin:20px auto 64px; padding:0 16px}
+  .stack{display:grid; gap:14px}
+  .card{background:linear-gradient(180deg, rgba(22,30,52,.72), rgba(12,18,32,.65)); border:1px solid var(--edge); border-radius:var(--r); box-shadow:var(--soft)}
+  .glass{padding:12px; background:var(--glass); border:1px solid rgba(109,243,255,.12); border-radius:var(--r)}
+  .video-wrap{position:relative; border-radius:14px; overflow:hidden; border:1px solid rgba(109,243,255,.15); background:#000; width:100%; height:min(72vh, 68vw * 1.33)}
+  @media (min-width:920px){ .video-wrap{ height: clamp(360px, 48vw, 560px); } }
+  video{width:100%; height:100%; object-fit:cover; display:block}
+  canvas{display:none}
+  .hud{position:absolute; top:10px; left:10px; right:10px; display:flex; gap:8px; align-items:center; justify-content:space-between; pointer-events:none}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; line-height:1; border:1px solid rgba(255,255,255,.14); background:linear-gradient(180deg, rgba(8,12,24,.65), rgba(14,18,30,.35)); box-shadow:0 0 0 1px rgba(109,243,255,.08), inset 0 0 24px rgba(109,243,255,.08)}
+  .chip .dot{width:8px;height:8px;border-radius:50%}
+  .ok .dot{background:#34e28a; box-shadow:0 0 10px #34e28a}
+  .warn .dot{background:#ffcc66; box-shadow:0 0 10px #ffcc66}
+  .bad .dot{background:#ff5d7a; box-shadow:0 0 10px #ff5d7a}
+  .controls{margin-top:12px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+  .btn{appearance:none; border:none; cursor:pointer; padding:12px 16px; font-weight:800; letter-spacing:.3px; color:white; border-radius:12px; background:radial-gradient(60% 200% at 50% -50%, rgba(255,255,255,.16), transparent 60%), linear-gradient(180deg, #74f1ff, #4b7dff); box-shadow:var(--glow)}
+  .btn.alt{background:radial-gradient(60% 220% at 50% -50%, rgba(255,255,255,.12), transparent 60%), linear-gradient(180deg, #2d334a, #1a2035); border:1px solid rgba(109,243,255,.16); box-shadow:0 6px 24px rgba(0,0,0,.4)}
+  .out{padding:14px; border-radius:var(--r); background:linear-gradient(180deg, rgba(10,12,22,.85), rgba(12,16,30,.7)); border:1px solid rgba(109,243,255,.14); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; white-space:pre-wrap; word-break:break-word; min-height:108px; box-shadow:inset 0 0 26px rgba(77,140,255,.08)}
+  footer{text-align:center; color:var(--muted); font-size:12px; padding:12px; opacity:.75}
+</style>
+</head>
+<body class="bg-grid">
+<header>
+  <div class="wrap">
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <h1>ModLabs • VLM Camera</h1>
+      <div class="muted">SmolVLM + llama.cpp</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="stack">
+    <section class="card glass">
+      <div class="video-wrap">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+        <div class="hud">
+          <div id="status" class="chip warn"><span class="dot"></span><span id="statusText">idle</span></div>
+          <div id="latency" class="chip"><span class="dot" style="background:#6df3ff;box-shadow:0 0 10px #6df3ff"></span><span id="latencyText">— ms</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="btnEnable">Enable Camera</button>
+        <button class="btn" id="btnStart">Start</button>
+        <button class="btn alt" id="btnSwitch">Front/Back</button>
+      </div>
+    </section>
+    <section class="card glass"><div id="out" class="out">—</div></section>
+  </div>
+</main>
+
+<footer>© ModLabs</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const video = $('video'), canvas = $('canvas');
+  const statusChip = $('status'), statusText = $('statusText');
+  const latencyText = $('latencyText'), out = $('out');
+  const btnEnable = $('btnEnable'), btnStart = $('btnStart'), btnSwitch = $('btnSwitch');
+
+  const API_BASE = window.location.origin; // served by Node HTTPS proxy
+  const INTERVAL_MS = 3000;
+  const SYS = 'You are a concise visual captioner. Output one short sentence. No preamble.';
+  const INSTR = 'Describe the scene in one short sentence.';
+
+  let stream = null, facing = 'environment', running = false, ticking = false, timer = null;
+
+  const secure = () => window.isSecureContext === true;
+  const setStatus = (t, k='warn') => { statusText.textContent = t; statusChip.classList.remove('ok','warn','bad'); statusChip.classList.add(k); }
+
+  async function replaceStream(s){ if (stream) stream.getTracks().forEach(t=>t.stop()); stream = s; video.srcObject = s; await video.play().catch(()=>{}); }
+  async function startCamera(target='environment'){
+    try{
+      const s = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: target, width:{ideal:1280}, height:{ideal:720} }, audio:false });
+      await replaceStream(s); facing = target; setStatus(`${facing} camera`, 'ok'); return true;
+    }catch(_){
+      try{ const s = await navigator.mediaDevices.getUserMedia({ video:true, audio:false });
+        await replaceStream(s); setStatus('camera fallback','warn'); return true;
+      }catch(e){ setStatus('camera blocked','bad'); out.textContent = `Camera error: ${e.name}: ${e.message}`; return false; }
+    }
+  }
+  async function enableCamera(){ if (!secure()){ setStatus('HTTPS required','bad'); alert('Serve over HTTPS on your LAN.'); return; } setStatus('requesting…','warn'); await startCamera('environment'); }
+  async function switchFacing(){ await startCamera(facing === 'environment' ? 'user' : 'environment'); }
+
+  function capture(side=512, q=0.8){
+    if (!stream || !video.videoWidth) return null;
+    const vw = video.videoWidth, vh = video.videoHeight, s = Math.min(vw, vh);
+    const sx = Math.floor((vw - s)/2), sy = Math.floor((vh - s)/2);
+    const ctx = canvas.getContext('2d'); canvas.width = side; canvas.height = side;
+    ctx.drawImage(video, sx, sy, s, s, 0, 0, side, side);
+    return canvas.toDataURL('image/jpeg', q);
+  }
+  async function send(img){
+    const url = API_BASE.replace(/\/$/,'') + '/v1/chat/completions';
+    const body = { temperature:0.2, max_tokens:120, top_p:0.9, seed:42,
+      messages:[ { role:'system', content: SYS }, { role:'user', content:[ {type:'text', text: INSTR}, {type:'image_url', image_url:{url: img}} ] } ] };
+    const t0 = performance.now();
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const t1 = performance.now(); latencyText.textContent = `${Math.round(t1 - t0)} ms`;
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    const data = await res.json(); return data?.choices?.[0]?.message?.content ?? '';
+  }
+  async function tick(){
+    if (!running || ticking) return; ticking = true;
+    try{ setStatus('processing…','warn'); const img = capture(512, .8); if (!img){ setStatus('waiting video','warn'); return; }
+      const txt = await send(img); out.textContent = (txt || '—').toString().trim(); setStatus('ready','ok');
+    }catch(e){ setStatus('error','bad'); out.textContent = (e.message || String(e)).slice(0, 1500);
+    }finally{ ticking = false; }
+  }
+  function startLoop(){ if (!stream){ setStatus('tap Enable','bad'); return; } if (running) return; running = true; btnStart.textContent = 'Stop'; tick(); timer = setInterval(tick, INTERVAL_MS); }
+  function stopLoop(){ running = false; btnStart.textContent = 'Start'; if (timer){ clearInterval(timer); timer = null; } setStatus('idle','warn'); }
+
+  btnEnable.addEventListener('click', enableCamera);
+  btnSwitch.addEventListener('click', switchFacing);
+  btnStart.addEventListener('click', () => running ? stopLoop() : startLoop());
+  window.addEventListener('beforeunload', () => { if (stream) stream.getTracks().forEach(t=>t.stop()); if (timer) clearInterval(timer); });
+
+  setStatus(secure() ? 'idle' : 'HTTPS required', secure() ? 'warn' : 'bad');
+})();
+</script>
+</body>
+</html>
