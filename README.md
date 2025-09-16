@@ -41,7 +41,7 @@ cmake --build build --config Release
 Download the SmolVLM model (500M) from Hugging Face and run:
 
 ```bash
-./llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF \
+llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF \
   --host 0.0.0.0 --port 8080 --jinja
 ```
 
