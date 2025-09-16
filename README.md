@@ -1,7 +1,4 @@
-
-<p align="center">
-  <video src="demo-2.mp4" autoplay loop muted playsinline width="600"></video>
-</p>
+![Demo](./output.gif)
 
 # modlabs-smolVLM
 
