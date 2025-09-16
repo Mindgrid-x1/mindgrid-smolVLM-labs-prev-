@@ -1,4 +1,7 @@
-![Demo](./output.gif)
+<p align="center">
+  <img src="./output.gf" alt="Demo" />
+</p>
+
 
 # modlabs-smolVLM
 
