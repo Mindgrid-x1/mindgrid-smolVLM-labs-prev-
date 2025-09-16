@@ -1,6 +1,6 @@
 
 <p align="center">
-  <video src="demo.mp4" autoplay loop muted playsinline width="600"></video>
+  <video src="demo-2.mp4" autoplay loop muted playsinline width="600"></video>
 </p>
 
 # modlabs-smolVLM
