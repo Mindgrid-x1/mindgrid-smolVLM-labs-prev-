@@ -1,4 +1,7 @@
 
+<p align="center">
+  <video src="demo.mp4" autoplay loop muted playsinline width="600"></video>
+</p>
 
 # modlabs-smolVLM
 
@@ -9,7 +12,7 @@ Mobile/desktop opensource **Realtime Camera UI** with a local `llama.cpp` server
 - HTTPS-enabled so **mobile browsers can use the camera**  
 - One command to serve the web UI and forward API calls  
 
-![Demo](./demo.gif)
+
 ---
 
 ## Quick Start
