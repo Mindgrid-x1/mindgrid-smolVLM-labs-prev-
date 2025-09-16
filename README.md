@@ -96,6 +96,7 @@ npm install
    > ⚠️ **Important:** Do not accidentally write  
    > `API_TARGET=API_TARGET=http://127.0.0.1:8080`  
    > Only a single `API_TARGET=` is valid.
+   > Happened to one of our devs :)
 
 4. Sanity check your `.env`:  
    ```bash
