@@ -6,7 +6,10 @@
   "scripts": {
     "cert": "dotenv -e .env -- bash scripts/gen-cert.sh",
     "start": "dotenv -e .env -- node server/server.js",
-    "dev": "npm run start"
+    "dev": "npm run start",
+    "check-env": "node -r dotenv/config -e \"console.log('API_TARGET=', process.env.API_TARGET || '(missing)')\" dotenv_config_path=.env",
+    "health:upstream": "curl -s http://127.0.0.1:8080/v1/models || true",
+    "health:proxy": "dotenv -e .env -- bash -lc 'curl -sk https://$LAN_IP:$PORT/v1/models || true'"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
