@@ -1,3 +1,5 @@
+
+
 # modlabs-smolVLM
 
 llama.cpp server with SmolVLM 500M to get real-time object detection, modded by modlabs  
@@ -7,6 +9,7 @@ Mobile/desktop opensource **Realtime Camera UI** with a local `llama.cpp` server
 - HTTPS-enabled so **mobile browsers can use the camera**  
 - One command to serve the web UI and forward API calls  
 
+![Demo](./demo.gif)
 ---
 
 ## Quick Start
