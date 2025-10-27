@@ -3,9 +3,9 @@
 </p>
 
 
-# modlabs-smolVLM
+# mindgrid-smolVLM
 
-llama.cpp server with SmolVLM 500M to get real-time object detection, modded by modlabs  
+llama.cpp server with SmolVLM 500M to get real-time object detection, modded by mindgrid  
 
 Mobile/desktop opensource **Realtime Camera UI** with a local `llama.cpp` server (SmolVLM 500M).  
 - Works fully **offline** on your LAN  
@@ -58,11 +58,12 @@ llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF \
 
 ---
 
-### 3. Clone and install ModLabs
+### 3. Clone and install MindGrid
 
 ```bash
-git clone https://github.com/Modlabs-x1/modlabs-smolVLM
-cd modlabs-smolVLM
+git clone https://github.com/mindgrid-x1/mindgrid-smolVLM-labs-prev-
+cd mindgrid-smolVLM-labs-prev-
+
 npm install
 ```
 
